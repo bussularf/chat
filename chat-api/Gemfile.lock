@@ -72,13 +72,17 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
     ast (2.4.2)
+    attr_encrypted (4.1.1)
+      encryptor (~> 3.0.0)
     base64 (0.2.0)
+    bcrypt (3.1.20)
     bigdecimal (3.1.8)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
     brakeman (6.2.2)
       racc
     builder (3.3.0)
+    chunky_png (1.4.0)
     concurrent-ruby (1.3.4)
     connection_pool (2.4.1)
     crass (1.0.6)
@@ -86,11 +90,25 @@ GEM
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
+    devise (4.9.4)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 4.1.0)
+      responders
+      warden (~> 1.2.3)
+    devise-two-factor (6.0.0)
+      activesupport (~> 7.0)
+      devise (~> 4.0)
+      railties (~> 7.0)
+      rotp (~> 6.0)
+    doorkeeper (5.7.1)
+      railties (>= 5)
     dotenv (3.1.4)
     dotenv-rails (3.1.4)
       dotenv (= 3.1.4)
       railties (>= 6.1)
     drb (2.2.1)
+    encryptor (3.0.0)
     erubi (1.13.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
@@ -127,6 +145,7 @@ GEM
     nio4r (2.7.4)
     nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
+    orm_adapter (0.5.0)
     parallel (1.26.3)
     parser (3.3.5.0)
       ast (~> 2.4.1)
@@ -180,9 +199,21 @@ GEM
     rake (13.2.1)
     rdoc (6.7.0)
       psych (>= 4.0.0)
+    redis (5.3.0)
+      redis-client (>= 0.22.0)
+    redis-client (0.22.2)
+      connection_pool
     regexp_parser (2.9.2)
     reline (0.5.10)
       io-console (~> 0.5)
+    responders (3.1.1)
+      actionpack (>= 5.2)
+      railties (>= 5.2)
+    rotp (6.3.0)
+    rqrcode (2.2.0)
+      chunky_png (~> 1.0)
+      rqrcode_core (~> 1.0)
+    rqrcode_core (1.2.0)
     rubocop (1.67.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
@@ -220,6 +251,8 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
     useragent (0.16.10)
+    warden (1.2.9)
+      rack (>= 2.0.9)
     webrick (1.8.2)
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
@@ -230,14 +263,20 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  attr_encrypted
   bootsnap
   brakeman
   debug
+  devise
+  devise-two-factor
+  doorkeeper
   dotenv-rails
   pg (~> 1.1)
   puma (>= 5.0)
   rack-cors
   rails (~> 7.2.1, >= 7.2.1.2)
+  redis (>= 4.0.1)
+  rqrcode
   rubocop-rails-omakase
   tzinfo-data
 

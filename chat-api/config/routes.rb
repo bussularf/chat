@@ -1,10 +1,19 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  use_doorkeeper do
+    skip_controllers :authorizations, :applications, :authorized_applications
+  end
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
+  devise_for :users
+  # get "current_user", to: "application#current_user"
+  post "/verify_otp", to: "application#verify_otp"
+  get "/enable_otp", to: "application#enable_otp"
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+
+  mount ActionCable.server => "/cable"
+
+  namespace :api do
+    namespace :v1 do
+      resources :messages
+    end
+  end
 end

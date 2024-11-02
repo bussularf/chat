@@ -28,5 +28,13 @@ module ChatApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.session_store :disabled
+
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore, key: "_chat_session"
+
+    # Desabilitar o armazenamento de sessão em autenticações padrão
+    config.session_store :disabled
+    config.skip_session_storage = [ :http_auth, :params_auth ]
   end
 end
