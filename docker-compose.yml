@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  web:
+    build:
+      context: ./api
+    command: bash -c "rm -f /app/tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
+    volumes:
+      - ./api:/app
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: redis://redis:6379/0
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3001:3000"
+    depends_on:
+      - web
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  db_data:
+
