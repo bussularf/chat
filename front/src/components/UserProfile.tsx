@@ -99,7 +99,7 @@ const UserProfile: React.FC = () => {
             type="text"
             value={user.name}
             onChange={(e) => setUser({ ...user, name: e.target.value })}
-            className="border rounded p-2 w-full"
+            className="border text-black rounded p-2 w-full"
             required
           />
         </div>
@@ -109,7 +109,7 @@ const UserProfile: React.FC = () => {
             type="email"
             value={user.email}
             readOnly
-            className="border rounded p-2 w-full"
+            className="border text-black rounded p-2 w-full"
           />
         </div>
         <div className="mb-4">
@@ -118,7 +118,7 @@ const UserProfile: React.FC = () => {
             type="password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            className="border rounded p-2 w-full"
+            className="border text-black rounded p-2 w-full"
           />
         </div>
         <div className="mb-4">
@@ -127,7 +127,7 @@ const UserProfile: React.FC = () => {
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="border rounded p-2 w-full"
+            className="border text-black rounded p-2 w-full"
           />
         </div>
         <div className="mb-4">
@@ -136,7 +136,7 @@ const UserProfile: React.FC = () => {
             type="password"
             value={confirmNewPassword}
             onChange={(e) => setConfirmNewPassword(e.target.value)}
-            className="border rounded p-2 w-full"
+            className="border text-black rounded p-2 w-full"
           />
         </div>
         <button type="submit" className="bg-blue-500 text-black px-4 py-2 rounded">
