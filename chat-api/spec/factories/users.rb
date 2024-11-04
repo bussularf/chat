@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :user do
-    email { "test@example.com" }
+    sequence(:email) { |n| "user#{n}@example.com" }
     password { "password" }
     name { "Test User" }
     otp_secret { ROTP::Base32.random_base32 }

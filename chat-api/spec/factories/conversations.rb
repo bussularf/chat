@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :conversation do
-    title { "Sample Conversation Title" }
+    title { "room 1" }
   end
 end
