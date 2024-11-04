@@ -5,7 +5,7 @@ class Api::V1::ConversationsController < ApplicationController
   before_action :set_conversation, only: [ :show ]
 
   def index
-    @conversations = Conversation.includes(:messages).page(params[:page]).per(2)
+    @conversations = Conversation.includes(:messages).page(params[:page]).per(5)
 
     render json: {
       conversations: @conversations.as_json(include: :messages),

@@ -3,6 +3,11 @@ class User < ApplicationRecord
   has_many :user_conversations, dependent: :nullify
   has_many :conversations, through: :user_conversations
   has_many :messages, dependent: :nullify
+
+  validates :email, presence: true
+  validates :password, presence: true, length: { minimum: 6 }
+  validates :otp_secret, presence: true
+
   belongs_to :conversation, optional: true
   before_create :set_two_factor_defaults
 

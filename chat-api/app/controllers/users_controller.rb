@@ -82,7 +82,7 @@ class UsersController < ApplicationController
 
   def generate_access_token(user)
     token = Doorkeeper::AccessToken.create(resource_owner_id: user.id, expires_in: 2.hours)
-    Rails.logger.info("Token gerado: #{token.token}") # Adicione isso para verificar o token gerado
+    Rails.logger.info("Token gerado: #{token.token}")
     token
   end
 
