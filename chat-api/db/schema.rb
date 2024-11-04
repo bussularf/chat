@@ -10,15 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_02_064856) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_03_215735) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "messages", force: :cascade do |t|
-    t.string "content"
-    t.bigint "user_id", null: false
+  create_table "conversations", force: :cascade do |t|
+    t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.string "content"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "conversation_id", null: false
+    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
@@ -64,6 +72,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_02_064856) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
+  create_table "user_conversations", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "conversation_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id"], name: "index_user_conversations_on_conversation_id"
+    t.index ["user_id"], name: "index_user_conversations_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -75,6 +92,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_02_064856) do
     t.string "otp_secret"
     t.integer "consumed_timestep"
     t.boolean "otp_required_for_login"
+    t.string "name"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -82,4 +100,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_02_064856) do
   add_foreign_key "messages", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "user_conversations", "conversations"
+  add_foreign_key "user_conversations", "users"
 end

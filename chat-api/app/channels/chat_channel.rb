@@ -9,6 +9,10 @@ class ChatChannel < ApplicationCable::Channel
     ActionCable.server.broadcast("chat_channel", data)
   end
 
+  def typing(data)
+    ActionCable.server.broadcast("chat_channel", { typing: data["typing"], user: current_user.id })
+  end
+
   def unsubscribed
     Rails.logger.debug "Unsubscribed from chat_channel"
   end

@@ -1,18 +1,14 @@
 class Api::V1::MessagesController < ApplicationController
   before_action :doorkeeper_authorize!
-
   before_action :set_message, only: [ :update, :destroy ]
-
-  def index
-    @messages = Message.all
-    render json: { message: @messages, user: current_user }
-  end
 
   def create
     @message = current_user.messages.build(message_params)
     if @message.save
-      ActionCable.server.broadcast("chat_channel", { message: @message })
-      render json: @message, status: :created
+      ActionCable.server.broadcast("chat_channel", {
+        message: @message.as_json(include: { user: { only: [ :id, :email ] } })
+      })
+      render json: { message: @message, email: current_user.email, status: :created }
     else
       render json: { errors: @message.errors.full_messages }, status: :unprocessable_entity
     end
@@ -20,7 +16,9 @@ class Api::V1::MessagesController < ApplicationController
 
   def update
     if @message.user_id == current_user.id && @message.update(message_params)
-      ActionCable.server.broadcast("chat_channel", { message: @message })
+      ActionCable.server.broadcast("chat_channel", {
+        message: @message.as_json(include: { user: { only: [ :id, :email ] } })
+      })
       render json: @message, status: :ok
     else
       render json: { error: "Not authorized" }, status: :unauthorized
@@ -36,6 +34,12 @@ class Api::V1::MessagesController < ApplicationController
     end
   end
 
+  def search
+    conversation = Conversation.find(params[:conversation_id])
+    @messages = conversation.messages.where("content LIKE ?", "%#{params[:query]}%")
+    render json: @messages.as_json(include: { user: { only: [ :id, :email ] } })
+  end
+
   private
 
   def set_message
@@ -44,6 +48,6 @@ class Api::V1::MessagesController < ApplicationController
   end
 
   def message_params
-    params.require(:message).permit(:content)
+    params.require(:message).permit(:content, :conversation_id)
   end
 end

@@ -1,0 +1,37 @@
+=> 
+[32m#<Elasticsearch::Model::Response::Records:0x000076df1c3d13b0[0m
+ @klass[32m=[0m
+  [PROXY] Message(id: integer, content: string, user_id: integer, created_at: datetime, updated_at: datetime, conversation_id: integer),
+ @options[32m=[0m{},
+ @raw_response[32m=[0m
+  [32m#<Elasticsearch::Model::Response::Response:0x000076df1c3d1400[0m
+   @klass[32m=[0m
+    [PROXY] Message(id: integer, content: string, user_id: integer, created_at: datetime, updated_at: datetime, conversation_id: integer),
+   @records[32m=[0m[32m#<Elasticsearch::Model::Response::Records:0x000076df1c3d13b0[0m ...[32m>[0m,
+   @search[32m=[0m
+    [32m#<Elasticsearch::Model::Searching::SearchRequest:0x000076df21e69390[0m
+     @definition[32m=[0m
+      {[33m:[0m[33mindex[0m=>[31m[1m"[0m[31mmessages[0m[31m[1m"[0m,
+       [33m:[0m[33mbody[0m=>
+        {[33m:[0m[33mquery[0m=>
+          {[33m:[0m[33mmulti_match[0m=>
+            {[33m:[0m[33mquery[0m=>[31m[1m"[0m[31moi[0m[31m[1m"[0m, [33m:[0m[33mfields[0m=>[[31m[1m"[0m[31mcontent[0m[31m[1m"[0m], [33m:[0m[33mtype[0m=>[31m[1m"[0m[31mbest_fields[0m[31m[1m"[0m}}}},
+     @klass[32m=[0m
+      [PROXY] Message(id: integer, content: string, user_id: integer, created_at: datetime, updated_at: datetime, conversation_id: integer),
+     @options[32m=[0m{}[32m>[0m[32m>[0m,
+ @response[32m=[0m
+  [32m#<Elasticsearch::Model::Response::Response:0x000076df1c3d1400[0m
+   @klass[32m=[0m
+    [PROXY] Message(id: integer, content: string, user_id: integer, created_at: datetime, updated_at: datetime, conversation_id: integer),
+   @records[32m=[0m[32m#<Elasticsearch::Model::Response::Records:0x000076df1c3d13b0[0m ...[32m>[0m,
+   @search[32m=[0m
+    [32m#<Elasticsearch::Model::Searching::SearchRequest:0x000076df21e69390[0m
+     @definition[32m=[0m
+      {[33m:[0m[33mindex[0m=>[31m[1m"[0m[31mmessages[0m[31m[1m"[0m,
+       [33m:[0m[33mbody[0m=>
+        {[33m:[0m[33mquery[0m=>
+          {[33m:[0m[33mmulti_match[0m=>
+            {[33m:[0m[33mquery[0m=>[31m[1m"[0m[31moi[0m[31m[1m"[0m, [33m:[0m[33mfields[0m=>[[31m[1m"[0m[31mcontent[0m[31m[1m"[0m], [33m:[0m[33mtype[0m=>[31m[1m"[0m[31mbest_fields[0m[31m[1m"[0m}}}},
+     @klass[32m=[0m
+      [PROXY] Message(id: integer, content: string, user_id: integer, created_at: datetime, updated_at: datetime, conversation_id: integer),
+     @options[32m=[0m{}[32m>[0m[32m>[0m[32m>[0m

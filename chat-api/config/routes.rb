@@ -4,16 +4,25 @@ Rails.application.routes.draw do
   end
 
   devise_for :users
-  # get "current_user", to: "application#current_user"
-  post "/verify_otp", to: "application#verify_otp"
-  get "/enable_otp", to: "application#enable_otp"
 
+  resources :users do
+    collection do
+      get :enable_otp
+      post :verify_otp
+    end
+  end
 
   mount ActionCable.server => "/cable"
 
   namespace :api do
     namespace :v1 do
-      resources :messages
+      resources :conversations, only: [ :index, :show, :create ] do
+        resources :messages do
+          collection do
+            get "search", to: "messages#search"
+          end
+        end
+      end
     end
   end
 end
