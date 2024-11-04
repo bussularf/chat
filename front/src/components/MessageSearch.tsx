@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { api } from '../api';
+import { useTheme } from './ThemeContext';
 
 interface Message {
   id: number;
@@ -20,6 +21,7 @@ interface SearchProps {
 
 const MessageSearch: React.FC<SearchProps> = ({ conversationId, onSearchResults }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const { darkMode } = useTheme();
 
   const handleSearch = async () => {
     try {
@@ -39,8 +41,8 @@ const MessageSearch: React.FC<SearchProps> = ({ conversationId, onSearchResults 
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Buscar mensagens..."
-        className="flex-grow border border-gray-300 p-2 rounded-lg"
-      />
+        className={`flex-grow border border-gray-300 p-2 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white'}`}
+        />
       <button onClick={handleSearch} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200">
         Buscar
       </button>

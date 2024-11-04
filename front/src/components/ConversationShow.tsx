@@ -4,6 +4,7 @@ import { createChatSubscription } from '../actionCable';
 import { FaPencilAlt, FaTrash } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import MessageSearch from './MessageSearch';
+import { useTheme } from './ThemeContext';
 
 interface User {
   id: number;
@@ -14,13 +15,27 @@ interface Message {
   id: number;
   content: string;
   user_id: number;
+  user: User | null;
+  userEmail?: string; 
+}
+
+interface Pagination {
+  current_page: number;
+  total_pages: number;
+  total_messages: number;
+}
+
+interface ApiResponse {
+  conversation: { id: number; title: string; created_at: string; updated_at: string };
   user: User;
-  userEmail?: string;
+  messages: Message[];
+  pagination: Pagination;
 }
 
 const ConversationShow: React.FC = () => {
   const { conversationId } = useParams<{ conversationId: string }>();
   const conversationIdNumber = conversationId ? parseInt(conversationId, 10) : 0;
+  const { darkMode } = useTheme();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -28,54 +43,51 @@ const ConversationShow: React.FC = () => {
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [conversationTitle, setConversationTitle] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await api.get(`/conversations/${conversationIdNumber}`, {
-          params: { page: currentPage, per_page: 10 }
-        });
-        console.log(response.data);
+        const token = localStorage.getItem('token') as string;
 
-        if (Array.isArray(response.data.messages)) {
-          setMessages(response.data.messages.map((message: Message) => ({
+        const response = await api.get<ApiResponse>(`/conversations/${conversationIdNumber}`, {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { page: currentPage, per_page: 10 },
+        });
+
+        const data: ApiResponse = response.data;
+
+        setConversationTitle(data.conversation.title);
+        setMessages(
+          data.messages.map((message) => ({
             ...message,
             userEmail: message.user ? message.user.email : 'Usuário desconhecido',
-          })));
-        } else {
-          setMessages([]);
-        }
+          }))
+        );
 
-        if (response.data.user) {
-          setCurrentUserId(response.data.user.id);
-        } else {
-          console.warn("Usuário não encontrado na resposta da API");
-        }
+        setCurrentUserId(data.user.id);
+        setTotalPages(data.pagination.total_pages);
 
-        setTotalPages(response.data.pagination.total_pages);
-
-        const token = localStorage.getItem('token');
-        if (token) {
-          const chatChannel = createChatSubscription(token, (data: { message: Message }) => {
-            setMessages((prevMessages) => {
-              if (!prevMessages.find((msg) => msg.id === data.message.id)) {
-                return [...prevMessages, {
+        const chatChannel = createChatSubscription(token, (data: { message: Message }) => {
+          setMessages((prevMessages) => {
+            if (!prevMessages.find((msg) => msg.id === data.message.id)) {
+              return [
+                ...prevMessages,
+                {
                   ...data.message,
                   userEmail: data.message.user ? data.message.user.email : 'Usuário desconhecido',
-                }];
-              }
-              return prevMessages;
-            });
+                },
+              ];
+            }
+            return prevMessages;
           });
+        });
 
-          return () => {
-            chatChannel.unsubscribe();
-          };
-        } else {
-          console.error("Token não encontrado");
-        }
+        return () => {
+          chatChannel.unsubscribe();
+        };
       } catch (error) {
-        console.error("Erro ao buscar mensagens:", error);
+        console.error('Erro ao buscar mensagens:', error);
         setMessages([]);
       }
     };
@@ -91,29 +103,36 @@ const ConversationShow: React.FC = () => {
     e.preventDefault();
     if (newMessage.trim()) {
       try {
+        const token = localStorage.getItem('token') as string;
+
         if (editingMessageId) {
-          const response = await api.put(`/messages/${editingMessageId}`, { content: newMessage });
-          
+          const response = await api.put(`/conversations/${conversationIdNumber}/messages/${editingMessageId}`, 
+          { content: newMessage },
+          { headers: { Authorization: `Bearer ${token}` } });
+
           setMessages((prevMessages) =>
             prevMessages.map((message) =>
-              message.id === editingMessageId ? { ...response.data.message, userEmail: response.data.email || "Email não disponível" } : message
+              message.id === editingMessageId ? { ...message, content: newMessage } : message
             )
           );
           setEditingMessageId(null);
         } else {
-          const response = await api.post('/messages', { content: newMessage, conversation_id: conversationIdNumber });
-          
-          const userEmail = response.data.email || "Email não disponível";
-          const messageWithEmail = {
-            ...response.data.message,
-            userEmail: userEmail,
+
+          const response = await api.post(`/conversations/${conversationIdNumber}/messages`, 
+            { content: newMessage, conversation_id: conversationIdNumber },
+            { headers: { Authorization: `Bearer ${token}` } });
+
+            const userEmail = response.data.email || "Email não disponível";
+            const messageWithEmail = {
+              ...response.data.message,
+              userEmail: userEmail,
           };
-  
+
           setMessages((prevMessages) => [...prevMessages, messageWithEmail]);
         }
         setNewMessage('');
       } catch (error) {
-        console.error("Erro ao enviar mensagem:", error);
+        console.error('Erro ao enviar mensagem:', error);
       }
     }
   };
@@ -125,10 +144,14 @@ const ConversationShow: React.FC = () => {
 
   const deleteMessage = async (id: number) => {
     try {
-      await api.delete(`/messages/${id}`);
+      const token = localStorage.getItem('token') as string;
+
+      await api.delete(`/conversations/${conversationIdNumber}/messages/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setMessages((prevMessages) => prevMessages.filter((message) => message.id !== id));
     } catch (error) {
-      console.error("Erro ao deletar mensagem:", error);
+      console.error('Erro ao deletar mensagem:', error);
     }
   };
 
@@ -137,8 +160,8 @@ const ConversationShow: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full p-4 bg-gray-100 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-4">Mensagens da Conversa</h2>
+    <div className={`flex flex-col h-full p-4 ${darkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg shadow-md`}>
+      <h2 className="text-xl font-bold mb-4">{conversationTitle || 'Mensagens da Conversa'}</h2>
       <MessageSearch conversationId={conversationIdNumber} onSearchResults={handleSearchResults} />
       <div className="flex-grow overflow-auto mb-4">
         {messages.map((message) => (
@@ -157,23 +180,30 @@ const ConversationShow: React.FC = () => {
         ))}
       </div>
       <form onSubmit={sendMessage} className="flex space-x-2">
-        <input type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Digite sua mensagem" required className="flex-grow border border-gray-300 p-2 rounded-lg" />
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Digite sua mensagem"
+          required
+          className={`flex-grow border border-gray-300 p-2 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white'}`}
+        />
         <button type="submit" className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200">
           {editingMessageId ? 'Atualizar' : 'Enviar'}
         </button>
       </form>
       <div className="flex justify-between mt-4">
-        <button 
-          onClick={() => handlePageChange(currentPage - 1)} 
-          disabled={currentPage === 1} 
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
           className="bg-gray-300 p-2 rounded-lg hover:bg-gray-400 transition duration-200"
         >
           Anterior
         </button>
         <span>Página {currentPage} de {totalPages}</span>
-        <button 
-          onClick={() => handlePageChange(currentPage + 1)} 
-          disabled={currentPage === totalPages} 
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
           className="bg-gray-300 p-2 rounded-lg hover:bg-gray-400 transition duration-200"
         >
           Próxima

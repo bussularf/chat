@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaSun, FaMoon } from 'react-icons/fa'; 
+import { useTheme } from './ThemeContext';
 
-interface NavbarProps {
-  darkMode: boolean; // Prop para o modo escuro
-  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const Navbar: React.FC<NavbarProps> = ({ darkMode, setDarkMode }) => {
+const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('token');
+  const { darkMode, setDarkMode } = useTheme();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
