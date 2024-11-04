@@ -10,3 +10,11 @@ docker-compose exec web bash
 rails console 
 docker-compose exec web rails console
 
+parar docker 
+docker-compose down
+startar docker 
+docker-compose up
+resconstruir container
+docker-compose build
+
+
