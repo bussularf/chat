@@ -3,7 +3,7 @@ module ApplicationCable
     identified_by :current_user
 
     def connect
-      self.current_user = find_verified_user if request.params[:token]
+      self.current_user = find_verified_user if request.params[:token].present?
     end
 
     private

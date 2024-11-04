@@ -1,9 +1,26 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+Doorkeeper::Application.destroy_all
+
+Doorkeeper::Application.create(
+  name: 'WeChat',
+  uid: 'Oi7CiNdAomYnKjcark6ZVJoKfCCGG-vcjQ0bSenlmYE',
+  secret: 'J8P0NQq3wHBawrlnhPD6nce_nHlMKLUCwV0oRR-qbX0',
+  redirect_uri: 'https://localhost',
+  scopes: ''
+)
+
+
+User.create!(
+  email: 'user1@example.com',
+  password: 'password',
+  password_confirmation: 'password',
+  otp_required_for_login: true,
+)
+
+User.create!(
+  email: 'user2@example.com',
+  password: 'password',
+  password_confirmation: 'password',
+  otp_required_for_login: true,
+)
+
+puts "Dados de seed carregados com sucesso!"
