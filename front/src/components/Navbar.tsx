@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { FaSun, FaMoon } from 'react-icons/fa'; 
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  darkMode: boolean; // Prop para o modo escuro
+  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ darkMode, setDarkMode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('token');
@@ -21,8 +27,12 @@ const Navbar: React.FC = () => {
     setIsOpen(false);
   };
 
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode);
+  };
+
   return (
-    <nav className="bg-gray-800 p-4">
+    <nav className={`p-4 ${darkMode ? 'bg-gray-900' : 'bg-gray-800'}`}>
       <div className="container mx-auto flex justify-between items-center">
         {isLoggedIn ? (
           <Link to="/conversations" className="text-white text-lg font-bold">
@@ -55,6 +65,17 @@ const Navbar: React.FC = () => {
               >
                 Logout
               </button>
+              <button 
+                onClick={toggleDarkMode}
+                className="text-white px-4 py-2 hover:bg-gray-700 rounded flex items-center"
+              >
+                {darkMode ? (
+                  <FaSun className="mr-2" />
+                ) : (
+                  <FaMoon className="mr-2" />
+                )}
+                {darkMode ? 'Modo Claro' : 'Modo Escuro'}
+              </button>
             </div>
           )}
         </div>
@@ -75,6 +96,17 @@ const Navbar: React.FC = () => {
                 className="text-white block px-4 py-2 hover:bg-red-700 rounded"
               >
                 Logout
+              </button>
+              <button 
+                onClick={toggleDarkMode}
+                className="text-white block px-4 py-2 hover:bg-gray-700 rounded flex items-center"
+              >
+                {darkMode ? (
+                  <FaSun className="mr-2" />
+                ) : (
+                  <FaMoon className="mr-2" />
+                )}
+                {darkMode ? 'Modo Claro' : 'Modo Escuro'}
               </button>
             </>
           )}

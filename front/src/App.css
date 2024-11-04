@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+main {
+  background-color: inherit; /* Para herdar do body */
+  transition: background-color 0.3s, color 0.3s; /* Transição suave */
+}
+
+main.dark {
+  background-color: #333; /* Cor de fundo para o modo escuro */
+  color: white; /* Cor do texto para o modo escuro */
+}

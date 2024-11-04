@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -11,10 +11,12 @@ import SignUp from './components/SignUp';
 import UserProfile from './components/UserProfile';
 
 const App: React.FC = () => {
+  const [darkMode, setDarkMode] = useState(false);
+
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
+      <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+        <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
