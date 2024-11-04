@@ -40,7 +40,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
+      <h2 className="text-2xl text-black font-bold mb-4">Login</h2>
       <form onSubmit={handleLogin} className="w-full max-w-sm">
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Email:</label>
