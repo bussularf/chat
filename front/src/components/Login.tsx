@@ -25,6 +25,8 @@ const Login: React.FC = () => {
         grant_type: 'password',
         username: email,
         password: password,
+        client_id: clientId,
+        client_secret: clientSecret,
       });
 
       const { access_token } = response.data;

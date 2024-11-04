@@ -1,6 +1,6 @@
 import { createConsumer } from "@rails/actioncable";
 
-const cable = createConsumer('ws://localhost:3000/cable');
+const cable = createConsumer('wss://localhost:3000/cable');
 
 type OnReceivedType = (data: any) => void;
 
