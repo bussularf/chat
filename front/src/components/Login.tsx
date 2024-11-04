@@ -25,18 +25,13 @@ const Login: React.FC = () => {
         grant_type: 'password',
         username: email,
         password: password,
-      }, {
-        auth: {
-          username: clientId,
-          password: clientSecret
-        }
       });
 
       const { access_token } = response.data;
 
       navigate('/otp', { state: { access_token, email } });
 
-    } catch (err) {
+    } catch (err: any) {
       setError('Login falhou. Verifique suas credenciais.');
     }
   };

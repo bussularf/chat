@@ -3,6 +3,8 @@ Rails.application.routes.draw do
     skip_controllers :authorizations, :applications, :authorized_applications
   end
 
+  mount ActionCable.server => "/ws"
+
   devise_for :users
 
   resources :users do

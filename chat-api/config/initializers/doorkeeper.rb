@@ -8,7 +8,7 @@ Doorkeeper.configure do
     user if user&.valid_password?(params[:password])
   end
 
-  access_token_expires_in 24.hours
+  access_token_expires_in 1.week
   use_refresh_token
   grant_flows %w[password]
 end

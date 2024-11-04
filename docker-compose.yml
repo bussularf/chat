@@ -3,31 +3,33 @@ version: '3.8'
 services:
   db:
     image: postgres:17
+    env_file:
+      - ./chat-api/.env 
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_DB: chat_api_development
     volumes:
       - db_data:/var/lib/postgresql/data
 
   web:
     build:
-      context: ./api
+      context: ./chat-api
     command: bash -c "rm -f /app/tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
     volumes:
-      - ./api:/app
+      - ./chat-api:/app
     depends_on:
       - db
       - redis
+      - elasticsearch
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: postgres://fernanda:121296@db:5432/chat_api_development
       REDIS_URL: redis://redis:6379/0
+      ELASTICSEARCH_URL: http://elasticsearch:9200
 
   frontend:
     build:
-      context: ./frontend
+      context: ./front
     ports:
       - "3001:3000"
     depends_on:
@@ -38,6 +40,13 @@ services:
     ports:
       - "6379:6379"
 
+  elasticsearch:
+    image: elasticsearch:8.15.3
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
 volumes:
   db_data:
-

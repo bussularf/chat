@@ -4,6 +4,7 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: <%= ENV['POSTGRES_USER'] %>
   password: <%= ENV['POSTGRES_PASSWORD'] %>
+  url: postgres://fernanda:121296@db:5432/chat_api_development
 
 development:
   <<: *default

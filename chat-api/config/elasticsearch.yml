@@ -1,2 +1,2 @@
-development:
-  host: 'localhost:9200'
+environment:
+  - network.bind_host=0.0.0.0

@@ -6,7 +6,6 @@ class User < ApplicationRecord
 
   validates :email, presence: true
   validates :password, presence: true, length: { minimum: 6 }
-  validates :otp_secret, presence: true
 
   belongs_to :conversation, optional: true
   before_create :set_two_factor_defaults
