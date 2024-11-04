@@ -26,20 +26,26 @@ Antes de executar o projeto, você precisa ter o Docker instalado em sua máquin
 Para gerenciar a aplicação usando Docker, utilize os seguintes comandos:
 
 - **Acessar o Container Docker**:
-  ```
+  ```bash
   docker-compose exec web bash
 
 
 - Iniciar o Console Rails:
-`docker-compose exec web rails console`
+
+  ```bash
+  docker-compose exec web rails console
 
 - Parar os Containers Docker:
 
-`docker-compose down`
+  ```bash
+  docker-compose down
 
 - Iniciar os Containers Docker:
-`docker-compose up`
 
-- Reconstruir os Containers:
+  ```bash
+  docker-compose up
 
-`docker-compose build`
+-Reconstruir os Containers:
+
+  ```bash
+  docker-compose build
