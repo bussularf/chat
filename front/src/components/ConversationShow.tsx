@@ -44,6 +44,7 @@ const ConversationShow: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [conversationTitle, setConversationTitle] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -117,18 +118,27 @@ const ConversationShow: React.FC = () => {
           );
           setEditingMessageId(null);
         } else {
-
-          const response = await api.post(`/conversations/${conversationIdNumber}/messages`, 
+          const response = await api.post(
+            `/conversations/${conversationIdNumber}/messages`, 
             { content: newMessage, conversation_id: conversationIdNumber },
-            { headers: { Authorization: `Bearer ${token}` } });
-
-            const userEmail = response.data.email || "Email não disponível";
-            const messageWithEmail = {
-              ...response.data.message,
-              userEmail: userEmail,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+        
+          const userEmail = response.data.email || "Email não disponível";
+          const messageWithEmail = {
+            ...response.data.message,
+            userEmail: userEmail,
           };
 
-          setMessages((prevMessages) => [...prevMessages, messageWithEmail]);
+          setMessages((prevMessages) => {
+            const messageExists = prevMessages.some(msg => msg.id === messageWithEmail.id);
+            
+            if (!messageExists) {
+              return [...prevMessages, messageWithEmail];
+            }
+
+            return prevMessages;
+          });
         }
         setNewMessage('');
       } catch (error) {
@@ -143,6 +153,9 @@ const ConversationShow: React.FC = () => {
   };
 
   const deleteMessage = async (id: number) => {
+    if (isDeleting) return;
+    setIsDeleting(true);
+
     try {
       const token = localStorage.getItem('token') as string;
 
@@ -152,6 +165,8 @@ const ConversationShow: React.FC = () => {
       setMessages((prevMessages) => prevMessages.filter((message) => message.id !== id));
     } catch (error) {
       console.error('Erro ao deletar mensagem:', error);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -171,8 +186,16 @@ const ConversationShow: React.FC = () => {
             <div className="flex space-x-2">
               {message.user_id === currentUserId && (
                 <>
-                  <FaPencilAlt className="h-5 w-5 text-blue-500 cursor-pointer hover:text-blue-700 transition duration-200" onClick={() => editMessage(message)} />
-                  <FaTrash className="h-5 w-5 text-red-500 cursor-pointer hover:text-red-700 transition duration-200" onClick={() => deleteMessage(message.id)} />
+                  <FaPencilAlt 
+                    className="h-5 w-5 text-blue-500 cursor-pointer hover:text-blue-700 transition duration-200" 
+                    onClick={() => editMessage(message)} 
+                  />
+                  <FaTrash 
+                    className={`h-5 w-5 cursor-pointer transition duration-200 ${isDeleting ? 'text-gray-400' : 'text-red-500 hover:text-red-700'}`} 
+                    onClick={() => {
+                      if (!isDeleting) deleteMessage(message.id);
+                    }} 
+                  />
                 </>
               )}
             </div>

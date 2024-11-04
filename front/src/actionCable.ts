@@ -1,12 +1,12 @@
 import { createConsumer } from "@rails/actioncable";
 
-const cable = createConsumer('ws://localhost:3000/cable'); // ajuste a URL conforme necessário
+const cable = createConsumer('ws://localhost:3000/cable');
 
-type OnReceivedType = (data: any) => void; // Altere 'any' para um tipo mais específico, se possível
+type OnReceivedType = (data: any) => void;
 
 export const createChatSubscription = (token: string, onReceived: OnReceivedType) => {
   return cable.subscriptions.create(
-    { channel: 'ChatChannel' }, // nome do canal que você está utilizando
+    { channel: 'ChatChannel' },
     {
       connected() {
         console.log('Conexão estabelecida');
@@ -17,7 +17,7 @@ export const createChatSubscription = (token: string, onReceived: OnReceivedType
       received(data) {
         onReceived(data);
       },
-      params: { token: token }, // Aqui você passa o token
+      params: { token: token },
     }
   );
 };
