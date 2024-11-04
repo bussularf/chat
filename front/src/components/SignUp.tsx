@@ -43,7 +43,7 @@ const SignUp: React.FC = () => {
             Usuário cadastrado com sucesso! 
             <button 
               className="text-blue-600 underline ml-2"
-              onClick={() => navigate('/')} // Navega para a página inicial
+              onClick={() => navigate('/')}
             >
               Voltar para Home
             </button>

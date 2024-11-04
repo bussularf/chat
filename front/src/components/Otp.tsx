@@ -5,29 +5,28 @@ import { url } from '../api';
 const Otp: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { email } = location.state || {};
+  const { email, access_token } = location.state || {};
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [qrCode, setQrCode] = useState(''); // Estado para armazenar o QR code
+  const [qrCode, setQrCode] = useState('');
 
   useEffect(() => {
     const fetchQrCode = async () => {
       try {
-        const response = await url.get('/enable_otp', {
+        const response = await url.get('/users/enable_otp', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${access_token}`
           }
         });
-        setQrCode(response.data.qr_code); // Armazena o QR code retornado
+        setQrCode(response.data.qr_code);
       } catch (err) {
-        console.error('Erro ao buscar o QR code:', err);
         setError('Erro ao buscar o QR code.');
       }
     };
 
-    fetchQrCode(); // Chama a função para buscar o QR code
-  }, []);
+    fetchQrCode();
+  }, [access_token]);
 
   const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,35 +34,46 @@ const Otp: React.FC = () => {
     setSuccess(false);
 
     try {
-      const response = await url.post('/verify_otp', { 
+      const response = await url.post('/users/verify_otp', { 
         otp, 
-        email 
+        email
       }, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${access_token}`
         }
       });
-
+    
       if (response.status === 200) {
+        localStorage.setItem('token', access_token);
+    
+        const userId = response.data.userId;
+        if (userId) {
+          localStorage.setItem('userId', userId);
+        } else {
+          setError('ID do usuário não encontrado na resposta.');
+          return;
+        }
+    
         setSuccess(true);
-        navigate('/chat');
+        navigate('/conversations');
       } else {
         setError('Código OTP inválido.');
       }
     } catch (err) {
+      console.error('Erro ao verificar o código OTP:', err);
       setError('Erro ao verificar o código OTP.');
-    }
+    }    
+    
   };
 
   return (
     <div className="flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Verificação OTP</h2>
 
-      {/* Exibir QR code */}
       {qrCode && (
-        <div className="mb-4">
+        <div className="mb-4 flex flex-col items-center">
           <p>Escaneie o QR code abaixo com seu aplicativo autenticador:</p>
-          <img src={qrCode} alt="QR Code" className="mt-2" />
+          <img src={qrCode} alt="QR Code" className="mt-2 w-48 h-48" />
         </div>
       )}
 
@@ -75,7 +85,7 @@ const Otp: React.FC = () => {
             value={otp} 
             onChange={(e) => setOtp(e.target.value)} 
             required 
-            maxLength={6} // Limita a entrada a 6 caracteres
+            maxLength={6}
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500" 
           />
         </div>

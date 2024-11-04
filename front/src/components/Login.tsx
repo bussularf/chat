@@ -32,12 +32,9 @@ const Login: React.FC = () => {
         }
       });
 
-      // Armazena o token no localStorage
       const { access_token } = response.data;
-      localStorage.setItem('token', access_token);
-      
-      // Redireciona diretamente para a tela de OTP
-      navigate('/otp'); // Direciona para a tela de OTP após o login
+
+      navigate('/otp', { state: { access_token, email } });
 
     } catch (err) {
       setError('Login falhou. Verifique suas credenciais.');
