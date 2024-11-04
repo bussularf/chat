@@ -139,12 +139,12 @@ const UserProfile: React.FC = () => {
             className="border rounded p-2 w-full"
           />
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button type="submit" className="bg-blue-500 text-black px-4 py-2 rounded">
           Atualizar Perfil
         </button>
       </form>
 
-      <button onClick={handleDeleteAccount} className="bg-red-500 text-white px-4 py-2 rounded mt-4">
+      <button onClick={handleDeleteAccount} className="bg-red-500 text-black px-4 py-2 rounded mt-4">
         Excluir Conta
       </button>
     </div>
