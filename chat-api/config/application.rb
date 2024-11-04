@@ -36,5 +36,7 @@ module ChatApi
     # Desabilitar o armazenamento de sessão em autenticações padrão
     config.session_store :disabled
     config.skip_session_storage = [ :http_auth, :params_auth ]
+    # config/application.rb
+    config.action_cable.allowed_request_origins = ['http://localhost:3001']
   end
 end
