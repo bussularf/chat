@@ -54,3 +54,7 @@ Para gerenciar a aplicação usando Docker, utilize os seguintes comandos:
   ```bash
   docker-compose exec web bundle exec rspec
 
+- Recriar ambiente de teste:
+  ```bash
+  docker-compose exec web bin/rails db:environment:set RAILS_ENV=test
+
