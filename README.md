@@ -45,7 +45,12 @@ Para gerenciar a aplicação usando Docker, utilize os seguintes comandos:
   ```bash
   docker-compose up
 
--Reconstruir os Containers:
+- Reconstruir os Containers:
 
   ```bash
   docker-compose build
+
+- Rodar testes:
+  ```bash
+  docker-compose exec web bundle exec rspec
+
