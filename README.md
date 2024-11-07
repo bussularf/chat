@@ -55,9 +55,9 @@ Para gerenciar a aplicação usando Docker, utilize os seguintes comandos:
   ```bash
   docker-compose exec web bin/rails db:environment:set RAILS_ENV=test
 
-![Imagem 1](images/1.png)
+![Imagem 1](./1.png)
 
-![Imagem 2](images/2.png)
+![Imagem 2](./2.png)
 
-![Imagem 3](images/3.png)
+![Imagem 3](./3.png)
 
