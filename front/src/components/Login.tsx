@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { url } from '../api';
 import { Link, useNavigate } from 'react-router-dom';
 
+interface DoorkeeperCredentials {
+  client_id: string;
+  client_secret: string;
+}
+
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,32 +17,33 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    const clientId = process.env.REACT_APP_CLIENT_ID;
-    const clientSecret = process.env.REACT_APP_CLIENT_SECRET;
-
-    if (!clientId || !clientSecret) {
-      setError('Client ID e Client Secret devem estar definidos.');
-      return;
-    }
-
+  
     try {
+      const credentialsResponse = await url.get('doorkeeper_credentials');
+      const credentials: DoorkeeperCredentials = credentialsResponse.data;
+  
+      const { client_id, client_secret } = credentials;
+  
+      if (!client_id || !client_secret) {
+        setError('Client ID e Client Secret não puderam ser carregados.');
+        return;
+      }
+  
       const response = await url.post('/oauth/token', {
         grant_type: 'password',
         username: email,
         password: password,
-        client_id: clientId,
-        client_secret: clientSecret,
+        client_id,
+        client_secret,
       });
-
+  
       const { access_token } = response.data;
-
       navigate('/otp', { state: { access_token, email } });
-
     } catch (err: any) {
       setError('Login falhou. Verifique suas credenciais.');
     }
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow-md">

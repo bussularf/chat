@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import i18n from './ i18n';
+import { I18nextProvider } from 'react-i18next';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './components/Home';
@@ -26,19 +28,21 @@ const AppContent: React.FC = () => {
 
   return (
     <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
-      <Navbar />
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/otp" element={<Otp />} />
-          <Route path="/conversations" element={<Conversations />} />
-          <Route path="/conversations/:conversationId" element={<ConversationShow />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/profile" element={<UserProfile />} />
-        </Routes>
-      </main>
-      <Footer />
+      <I18nextProvider i18n={i18n}>
+        <Navbar />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/otp" element={<Otp />} />
+            <Route path="/conversations" element={<Conversations />} />
+            <Route path="/conversations/:conversationId" element={<ConversationShow />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/profile" element={<UserProfile />} />
+          </Routes>
+        </main>
+        <Footer />
+      </I18nextProvider>
     </div>
   );
 };
