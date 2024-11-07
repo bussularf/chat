@@ -38,6 +38,10 @@ RSpec.configure do |config|
     Rails.root.join('spec/fixtures')
   ]
 
+  if Rails.env.test?
+    ENV['DATABASE_URL'] = ENV['TEST_DATABASE_URL']
+  end
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
@@ -66,4 +70,17 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
   config.include FactoryBot::Syntax::Methods
+
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.allow_remote_database_url = true 
+    DatabaseCleaner.clean_with(:truncation)
+  end
+  
+
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
+  end
 end

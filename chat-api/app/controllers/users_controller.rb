@@ -10,18 +10,17 @@ class UsersController < ApplicationController
     render json: current_user
   end
 
-
   def update
     user = current_user
     if params[:currentPassword].present? && params[:newPassword].present?
       if user.valid_password?(params[:currentPassword])
         if user.update(password: params[:newPassword])
-          render json: { message: "Senha atualizada com sucesso." }, status: :ok
+          render json: { message: I18n.t('users.update.success') }, status: :ok
         else
           render json: { error: user.errors.full_messages }, status: :unprocessable_entity
         end
       else
-        render json: { error: "Senha atual incorreta." }, status: :unauthorized
+        render json: { error: I18n.t('users.update.invalid_password') }, status: :unauthorized
       end
     else
       if user.update(account_update_params)
@@ -34,17 +33,17 @@ class UsersController < ApplicationController
 
   def destroy
     current_user.destroy
-    render json: { message: "Conta excluída com sucesso." }, status: :ok
+    render json: { message: I18n.t('users.destroy.success') }, status: :ok
   rescue StandardError => e
-    render json: { error: "Erro ao excluir a conta: #{e.message}" }, status: :unprocessable_entity
+    render json: { error: I18n.t('users.destroy.error', error_message: e.message) }, status: :unprocessable_entity
   end
 
   def verify_otp
     user = User.find_by(email: current_user.email)
     if user && user.validate_and_consume_otp!(params[:otp])
-      render json: { message: "OTP verificado com sucesso.", userId: current_user.id }, status: :ok
+      render json: { message: I18n.t('users.verify_otp.success'), userId: current_user.id }, status: :ok
     else
-      render json: { error: "Código OTP inválido." }, status: :unprocessable_entity
+      render json: { error: I18n.t('users.verify_otp.error') }, status: :unprocessable_entity
     end
   end
 
@@ -76,7 +75,7 @@ class UsersController < ApplicationController
 
   def require_otp
     if current_user&.otp_required_for_login && !session[:otp_verified]
-      render json: { error: "OTP is required" }, status: :unauthorized
+      render json: { error: I18n.t('users.require_otp') }, status: :unauthorized
     end
   end
 

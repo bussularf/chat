@@ -21,7 +21,7 @@ class Api::V1::MessagesController < ApplicationController
       })
       render json: @message, status: :ok
     else
-      render json: { error: "Not authorized" }, status: :unauthorized
+      render json: { error: I18n.t('messages.update.not_authorized') }, status: :unauthorized
     end
   end
 
@@ -30,7 +30,7 @@ class Api::V1::MessagesController < ApplicationController
       @message.destroy
       head :no_content
     else
-      render json: { error: "Not authorized" }, status: :unauthorized
+      render json: { error: I18n.t('messages.destroy.not_authorized') }, status: :unauthorized
     end
   end
 
@@ -44,7 +44,7 @@ class Api::V1::MessagesController < ApplicationController
 
   def set_message
     @message = Message.find(params[:id])
-    render json: { error: "Not found" }, status: :not_found unless @message
+    render json: { error: I18n.t('messages.set_message.not_found') }, status: :not_found unless @message
   end
 
   def message_params

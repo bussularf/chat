@@ -37,13 +37,12 @@ class Api::V1::ConversationsController < ApplicationController
     }
   end
 
-
   def create
     @conversation = current_user.conversations.new(conversation_params)
     if @conversation.save
       render json: @conversation, status: :created
     else
-      render json: { error: @conversation.errors.full_messages }, status: :unprocessable_entity
+      render json: { error: I18n.t('conversations.create.error', errors: @conversation.errors.full_messages) }, status: :unprocessable_entity
     end
   end
 

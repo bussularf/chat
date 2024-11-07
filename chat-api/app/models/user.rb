@@ -1,10 +1,11 @@
 class User < ApplicationRecord
-  devise :registerable, :recoverable, :rememberable, :validatable, :two_factor_authenticatable, otp_secret_encryption_key: Rails.application.credentials.active_record_encryption.primary_key
+  devise :registerable, :recoverable, :rememberable, :validatable, :two_factor_authenticatable, otp_secret_encryption_key: Rails.application.credentials.secret_key_base
   has_many :user_conversations, dependent: :nullify
   has_many :conversations, through: :user_conversations
   has_many :messages, dependent: :nullify
 
   validates :email, presence: true
+  validates :password, presence: true
 
   belongs_to :conversation, optional: true
   before_create :set_two_factor_defaults

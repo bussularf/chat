@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  use_doorkeeper do
-    skip_controllers :authorizations, :applications, :authorized_applications
-  end
+  use_doorkeeper 
+  mount ActionCable.server => '/ws'
+
 
   devise_for :users
 
@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     end
   end
 
-  mount ActionCable.server => "/cable"
+  get 'doorkeeper_credentials', to: 'application#doorkeeper_credentials'
 
   namespace :api do
     namespace :v1 do

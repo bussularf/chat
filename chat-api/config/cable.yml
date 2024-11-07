@@ -1,6 +1,5 @@
 development:
-  adapter: redis
-  channel_prefix: chat_api_development
+  adapter: async
 
 test:
   adapter: test

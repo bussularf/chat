@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let(:user) { create(:user) } # Use create ao invés de build para persistir o usuário com OTP
+  let(:user) { create(:user) }
 
   describe 'validations' do
     it 'is valid with valid attributes' do
@@ -31,8 +31,8 @@ RSpec.describe User, type: :model do
 
     it 'does not allow login without a valid OTP' do
       invalid_otp = '123456'
-      expect(user.validate_and_consume_otp!(invalid_otp)).to be_falsey  # Espera que a validação falhe
-      expect(user.consumed_timestep).to eq(0)  # Espera que o consumed_timestep não aumente
+      expect(user.validate_and_consume_otp!(invalid_otp)).to be_falsey
+      expect(user.consumed_timestep).to eq(0)
     end
   end
 end

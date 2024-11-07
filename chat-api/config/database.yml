@@ -13,6 +13,8 @@ development:
 test:
   <<: *default
   database: chat_api_test
+  url: <%= ENV['TEST_DATABASE_URL'] %>
+
 
 production:
   <<: *default

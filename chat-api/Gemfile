@@ -18,6 +18,9 @@ gem 'rqrcode'
 gem 'elasticsearch-rails'
 gem 'elasticsearch-model'
 gem 'kaminari'
+gem 'sidekiq-cron'
+gem 'sidekiq'
+gem 'i18n'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -45,6 +48,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'database_cleaner-active_record'
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
